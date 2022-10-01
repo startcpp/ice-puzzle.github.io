@@ -3,10 +3,54 @@
 	<head>
 		<meta charset="utf-8">
 		<title>氷床の倉庫番 (beta ver 0.1.0) </title>
+		<style>
+			canvas { background: #eee; display: block; margin: 0 auto; }
+		</style>
 	</head>
 	<body>
 		<h3>寿司は美味しいですねぇ～～</h3>
 		<canvas id="myCanvas" width="480" height="320"></canvas>
-		<script></script>
+		<input type = "button" value = "状態を破棄する" onclick = "OnButtonClick();" /><br>
+		<script>
+			function OnButtonClick() {
+				//localStorage.clear();	//状態を破棄する
+				localStorage.setItem('reload_test', 0);
+			}
+
+			function getMousePosition(canvas, event) {
+				var rect = canvas.getBoundingClientRect();
+				return {
+					x: parseInt(event.clientX - rect.left),
+					y: parseInt(event.clientY - rect.top)
+				};
+			}
+			
+			function printPosition(canvas, mousePos) {
+				var ctx = canvas.getContext('2d');
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.font = '12pt "MSゴシック"';
+				ctx.fillStyle = "black"
+				var message = 'Mouse position X:' + mousePos.x + ", Y: " + mousePos.y;
+				ctx.fillText(message, mousePos.x, mousePos.y);
+				
+				var reload_test = parseInt(localStorage.getItem('reload_test'));
+				if (reload_test == null) {
+					reload_test = 0;
+				}
+				ctx.fillText('reload_test = ' + reload_test.toString(), 300, 30);
+				localStorage.setItem('reload_test', reload_test + 1);
+			}
+
+			function draw() {
+				var canvas = document.getElementById("myCanvas");
+				var ctx = canvas.getContext("2d");			
+				canvas.addEventListener('mousemove', function (event) {
+					var mousePos = getMousePosition(canvas, event);
+					printPosition(canvas, mousePos);
+				});
+			}
+			
+			draw();
+		</script>
 	</body>
 </html>
